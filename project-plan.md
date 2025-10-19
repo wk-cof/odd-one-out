@@ -25,25 +25,32 @@
 - Respect `prefers-reduced-motion`; offer reduced animations.
 - No external asset dependencies; rely purely on emoji glyphs.
 - Runs smoothly on modern browsers (Chrome, Edge, Safari, Firefox) on desktop and mobile.
+- Keep React components lean, focused, and reusable; avoid monolithic components.
+- Encourage DRY patterns with shared utility hooks/components.
+- Maintain a reliable automated test suite and ensure it passes after each milestone.
 
 ## 4. Technical Stack & Tooling
-- Framework: Vite + TypeScript, modular vanilla DOM rendering.
-- State management: custom game state pure functions (`createRound`, `tick`, etc.).
+- Framework: Vite + React + TypeScript (functional components + hooks).
+- Styling: Emotion CSS-in-JS (`@emotion/react`/`@emotion/styled`); may incorporate MUI components where helpful.
+- State management: custom game state pure functions (`createRound`, `tick`, etc.) consumed via React context/hooks.
 - Persistence: `localStorage` keys `ooo:lastSettings` and `ooo:bestScore:<mode>`.
 - Build & deploy: Vite build, GitHub Pages via `vite` + `gh-pages`.
-- Code quality: TypeScript types for game entities, prefer pure logic for rules.
+- Testing: Vitest + React Testing Library + jsdom environment; run suite between phases.
+- Code quality: TypeScript types for game entities, prefer pure logic for rules; ESLint + Prettier integration.
 
 ## 5. Architecture Overview
-- `src/main.ts`: bootstrap, initialize UI/event wiring.
-- `src/styles.css`: responsive layout, animations, focus styles, reduced-motion rules.
+- `src/main.tsx`: bootstrap React app with providers.
+- `src/app/App.tsx`: root layout, routing between modes/screens.
+- `src/styles/global.ts`: Emotion global styles, responsive layout, reduced-motion rules.
 - `src/game/engine.ts`: configuration, round lifecycle, timers, scoring, streak tracking.
 - `src/game/rules.ts`: rule evaluation (category, attribute, orientation) and odd-tile selection.
 - `src/game/types.ts`: define `GameState`, `Tile`, `Rule`, `Settings`.
 - `src/game/storage.ts`: save/load settings and best scores.
 - `src/data/emojis.ts`: emoji pools by theme; attribute metadata for advanced rules.
-- `src/ui/render.ts`: render HUD, board, dialogs/modals.
-- `src/ui/events.ts`: attach handlers for mouse/touch/keyboard input.
-- `src/ui/a11y.ts`: ARIA live region management, focus helpers.
+- `src/components/`: reusable React components (Board, TileButton, Hud, Modals, SettingsPanel) kept focused and composable.
+- `src/hooks/`: shared React hooks (useGameEngine, useKeyboardNavigation, usePersistentState).
+- `src/a11y/aria.ts`: ARIA live region helpers and focus management utilities.
+- `src/test/`: shared test utilities and component render helpers.
 
 ## 6. Data & Rule Generation
 - Emoji pools keyed by theme; each tile holds `emoji`, `isOdd`, optional `attrTags`.
@@ -82,16 +89,16 @@
 - For `username.github.io` root sites, update base to `/`.
 
 ## 11. Milestones & Tasks
-1. **Scaffold** Vite + TypeScript project; configure linting/types.
-2. **Data setup**: emoji pools + attribute metadata.
-3. **Core engine**: state types, round generator, scoring, timer logic.
-4. **Rules module**: category, attribute, orientation implementations + tests.
-5. **UI layer**: render grid/HUD, responsive layout, animations.
-6. **Input handlers**: keyboard navigation, touch/mouse selection, restart, settings.
-7. **Accessibility**: ARIA live region, focus cycling, reduced motion.
-8. **Persistence**: localStorage integration for settings/best scores.
-9. **Polish**: sound toggles (if added later), game over dialogs, explanations (roadmap).
-10. **Deploy**: configure GitHub Pages script, validate production build.
+1. **Scaffold** Vite + React + TypeScript project with Emotion, MUI deps, ESLint/Prettier, Vitest/RTL setup; validate tests pass.
+2. **Data setup**: implement emoji pools + attribute metadata with accompanying unit tests.
+3. **Core engine**: build state types, round generator, scoring, timer logic with test coverage.
+4. **Rules module**: finalize category, attribute, orientation rules + tests.
+5. **UI foundation**: assemble reusable components (Board, Tile, HUD) with Emotion styles and snapshot/interaction tests.
+6. **Settings & input handlers**: implement settings panel, keyboard/touch handlers, restart flow with integration tests.
+7. **Accessibility pass**: ARIA live regions, focus management, reduced-motion adjustments; add targeted tests where feasible.
+8. **Persistence**: integrate localStorage for settings/best scores with tests; confirm suite passes.
+9. **Polish**: refine animations, responsiveness, add roadmap hooks (explanations placeholders); ensure clean component boundaries.
+10. **Deploy**: configure GitHub Pages script, run full test/build pipeline, validate production output.
 
 ## 12. Risks & Mitigations
 - **Emoji rendering differences**: test across major OS/browsers; avoid ambiguous glyphs.
@@ -104,4 +111,3 @@
 - Allow custom emoji sets uploaded by parents/teachers.
 - Convert to PWA for offline resilience and “resume last game” capability.
 - Add sound feedback with mute toggle and respect reduced-motion/audio-prefers-reduced.
-
