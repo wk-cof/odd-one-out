@@ -13,8 +13,6 @@
 - ✅ Assembled interactive React UI with HUD, board, keyboard navigation, and settings drawer.
 - ✅ Layered in live ARIA announcements, focus management, and keyboard hotkeys for full accessibility.
 - ✅ Persisted player settings and per-mode best scores via localStorage.
-- ✅ Polished the UI with live status alerts, hover motion, and keyboard hotkeys.
-- ✅ Verified production build & deployment script (gh-pages, Vite base path).
 
 ## 2. Functional Requirements
 - Present 2×2 emoji grids; exactly one tile must violate the active rule.

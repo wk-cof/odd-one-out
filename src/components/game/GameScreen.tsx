@@ -127,7 +127,7 @@ export function GameScreen() {
               elevation={0}
               sx={{
                 p: 2,
-                borderRadius: 4,
+                borderRadius: 1,
                 bgcolor: 'rgba(12,14,19,0.8)',
                 border: '1px solid rgba(255,255,255,0.08)',
               }}

@@ -27,7 +27,7 @@ export function GameHud({ state, settings, bestScore }: GameHudProps) {
         gap: 2,
         gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
         bgcolor: 'rgba(255,255,255,0.06)',
-        borderRadius: 4,
+        borderRadius: 1,
         border: '1px solid rgba(255,255,255,0.12)',
         p: 2,
       }}
