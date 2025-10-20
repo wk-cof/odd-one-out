@@ -1,4 +1,4 @@
-import { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'react'
 import { Box, Container, Stack } from '@mui/material'
 
 export function AppLayout({ children }: PropsWithChildren) {
@@ -13,7 +13,7 @@ export function AppLayout({ children }: PropsWithChildren) {
         py: { xs: 4, md: 6 },
       }}
     >
-      <Container maxWidth="sm">
+      <Container maxWidth="md">
         <Stack
           spacing={4}
           sx={{

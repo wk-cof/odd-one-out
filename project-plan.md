@@ -5,6 +5,17 @@
 - Emphasize quick rounds, intuitive interactions, and gentle feedback loops.
 - Support both casual play (Practice, Kid Mode) and competitive streak chasing (Endless).
 
+## Progress Summary
+- ✅ Scaffolded React + Emotion foundation with testing harness.
+- ✅ Added curated emoji pools, attribute metadata, and validation tests.
+- ✅ Implemented pure game engine with timers, scoring, and failure handling.
+- ✅ Added rule generator covering category, attribute, and orientation puzzles.
+- ✅ Assembled interactive React UI with HUD, board, keyboard navigation, and settings drawer.
+- ✅ Layered in live ARIA announcements, focus management, and keyboard hotkeys for full accessibility.
+- ✅ Persisted player settings and per-mode best scores via localStorage.
+- ✅ Polished the UI with live status alerts, hover motion, and keyboard hotkeys.
+- ✅ Verified production build & deployment script (gh-pages, Vite base path).
+
 ## 2. Functional Requirements
 - Present 2×2 emoji grids; exactly one tile must violate the active rule.
 - Game modes:
@@ -89,16 +100,16 @@
 - For `username.github.io` root sites, update base to `/`.
 
 ## 11. Milestones & Tasks
-1. **Scaffold** Vite + React + TypeScript project with Emotion, MUI deps, ESLint/Prettier, Vitest/RTL setup; validate tests pass.
-2. **Data setup**: implement emoji pools + attribute metadata with accompanying unit tests.
-3. **Core engine**: build state types, round generator, scoring, timer logic with test coverage.
-4. **Rules module**: finalize category, attribute, orientation rules + tests.
-5. **UI foundation**: assemble reusable components (Board, Tile, HUD) with Emotion styles and snapshot/interaction tests.
-6. **Settings & input handlers**: implement settings panel, keyboard/touch handlers, restart flow with integration tests.
-7. **Accessibility pass**: ARIA live regions, focus management, reduced-motion adjustments; add targeted tests where feasible.
-8. **Persistence**: integrate localStorage for settings/best scores with tests; confirm suite passes.
-9. **Polish**: refine animations, responsiveness, add roadmap hooks (explanations placeholders); ensure clean component boundaries.
-10. **Deploy**: configure GitHub Pages script, run full test/build pipeline, validate production output.
+1. ✅ **Scaffold** Vite + React + TypeScript project with Emotion, MUI deps, ESLint/Prettier, Vitest/RTL setup; validate tests pass.
+2. ✅ **Data setup**: implement emoji pools + attribute metadata with accompanying unit tests.
+3. ✅ **Core engine**: build state types, round generator, scoring, timer logic with test coverage.
+4. ✅ **Rules module**: finalize category, attribute, orientation rules + tests.
+5. ✅ **UI foundation**: assemble reusable components (Board, Tile, HUD) with Emotion styles and snapshot/interaction tests.
+6. ✅ **Settings & input handlers**: implement settings panel, keyboard/touch handlers, restart flow with integration tests.
+7. ✅ **Accessibility pass**: ARIA live regions, focus management, reduced-motion adjustments; add targeted tests where feasible.
+8. ✅ **Persistence**: integrate localStorage for settings/best scores with tests; confirm suite passes.
+9. ✅ **Polish**: refine animations, responsiveness, add roadmap hooks (explanations placeholders); ensure clean component boundaries.
+10. ✅ **Deploy**: configure GitHub Pages script, run full test/build pipeline, validate production output.
 
 ## 12. Risks & Mitigations
 - **Emoji rendering differences**: test across major OS/browsers; avoid ambiguous glyphs.

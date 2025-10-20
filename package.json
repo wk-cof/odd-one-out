@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "deploy": "vite build && gh-pages -d dist"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -34,6 +35,7 @@
     "@vitejs/plugin-react-swc": "^4.1.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-testing-library": "^6.4.2",
+    "gh-pages": "^6.1.1",
     "jsdom": "^26.0.0",
     "prettier": "^3.4.2",
     "eslint": "^9.36.0",

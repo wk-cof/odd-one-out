@@ -1,11 +1,24 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { act } from 'react'
 import { App } from './App'
-import { renderWithProviders, screen } from '../test/utils'
 
 describe('App', () => {
-  it('renders the landing message', () => {
-    renderWithProviders(<App />)
-    expect(screen.getByRole('heading', { name: /odd one out/i })).toBeInTheDocument()
-    expect(screen.getByText(/Phase 1\/10/)).toBeVisible()
+  beforeEach(() => {
+    window.localStorage.clear()
+  })
+
+  it('renders the game screen with four tiles', async () => {
+    vi.useFakeTimers()
+    try {
+      render(<App />)
+      expect(screen.getByRole('heading', { name: /odd one out/i })).toBeInTheDocument()
+      expect(screen.getAllByRole('button', { name: /emoji tile/i })).toHaveLength(4)
+      await act(async () => {
+        vi.runOnlyPendingTimers()
+      })
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })

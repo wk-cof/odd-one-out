@@ -26,6 +26,7 @@ Each round presents a 2×2 grid of emojis. Three follow the same rule (e.g., all
 - **Kid-friendly UI**: large tap targets, gentle feedback, zero ads
 - **Accessibility**: focus ring, keyboard navigation, screen reader announcements
 - **Customization**: choose themes, toggle pattern types, adjust timers
+- **Hotkeys**: `R` to restart instantly, `S` to open/close settings from the keyboard
 
 ---
 
@@ -76,20 +77,28 @@ npm run preview
 .
 ├── index.html
 ├── src
-│   ├── main.ts              # app bootstrap
-│   ├── styles.css           # responsive styles & animations
-│   ├── game
-│   │   ├── engine.ts        # round generation, scoring, timers
-│   │   ├── rules.ts         # pattern rules (category, attribute, orientation)
-│   │   ├── types.ts         # types: GameState, Settings, Rule, Theme
-│   │   └── storage.ts       # localStorage (best score, settings)
-│   ├── data
-│   │   └── emojis.ts        # emoji pools organized by theme/attributes
-│   └── ui
-│       ├── render.ts        # DOM rendering (grid/HUD/modals)
-│       ├── events.ts        # input handlers (click/keyboard)
-│       └── a11y.ts          # ARIA live regions, focus helpers
-├── vite.config.ts
+│   ├── main.tsx                 # React entry point
+│   ├── app/
+│   │   ├── App.tsx              # top-level layout wiring
+│   │   ├── App.test.tsx         # smoke test for rendered shell
+│   │   └── theme.ts             # MUI theme (palette, typography)
+│   ├── components/
+│   │   ├── a11y/LiveRegion.tsx  # visually hidden aria-live announcer
+│   │   ├── game/                # board, HUD, dialogs, screen shell
+│   │   ├── layout/AppLayout.tsx # centered container and framing
+│   │   └── settings/SettingsPanel.tsx # modal for modes/patterns/themes
+│   ├── data/emojis.ts           # emoji pools + attribute metadata
+│   ├── game/
+│   │   ├── engine.ts            # round lifecycle, scoring, timers
+│   │   ├── rules.ts             # category/attribute/orientation generators
+│   │   ├── storage.ts           # localStorage helpers (settings, best scores)
+│   │   └── types.ts             # shared TypeScript models
+│   ├── hooks/
+│   │   ├── useArrowNavigation.ts    # grid keyboard navigation helper
+│   │   └── useGameController.tsx    # React context + engine bridge
+│   ├── styles/global.ts         # global Emotion styles & reduced-motion rules
+│   └── test/                    # Vitest setup + render utilities
+├── vite.config.ts               # Vite + Vitest configuration
 ├── tsconfig.json
 └── package.json
 ```
@@ -102,38 +111,57 @@ Edit `src/game/engine.ts` and `src/data/emojis.ts` to tune defaults.
 
 ```ts
 // src/game/engine.ts (excerpt)
-export const CONFIG = {
-  mode: "endless" as "endless" | "practice" | "kid",
-  startLives: 3,
-  startTimeMs: 6000,          // per round
-  minTimeMs: 2500,            // cap difficulty
-  timeStepMs: 200,            // decrement each round (endless)
+export const DEFAULT_SETTINGS: GameSettings = {
+  mode: 'endless',
+  lives: 3,
   patterns: { category: true, attribute: true, orientation: false },
-  themes: ["animals", "food", "nature", "space", "sports", "transport", "shapes"],
-};
+  themes: ['animals', 'food', 'nature', 'space', 'sports', 'transport', 'shapes'],
+  timer: { startTimeMs: 6000, minTimeMs: 2500, timeStepMs: 200 },
+}
+
+export const createSettings = (overrides: Partial<GameSettings> = {}): GameSettings => ({
+  ...DEFAULT_SETTINGS,
+  ...overrides,
+  patterns: { ...DEFAULT_SETTINGS.patterns, ...(overrides.patterns ?? {}) },
+  themes: overrides.themes ?? [...DEFAULT_SETTINGS.themes],
+  timer: { ...DEFAULT_SETTINGS.timer, ...(overrides.timer ?? {}) },
+})
+
+// Example: Kid mode with orientation puzzles enabled
+const kidMode = createSettings({
+  mode: 'kid',
+  patterns: { category: true, attribute: true, orientation: true },
+  timer: { startTimeMs: 7000, minTimeMs: 3500, timeStepMs: 150 },
+})
 ```
 
 ```ts
 // src/data/emojis.ts (excerpt)
-export const POOLS = {
-  animals:  ["🐼","🦊","🐨","🦁","🐯","🐸","🐙","🐢","🐧","🐝"],
-  food:     ["🍎","🍌","🍓","🍕","🍔","🍣","🍩","🧁","🥑","🧀"],
-  nature:   ["🍁","🍄","🌻","🌈","❄️","🌊","⛰️","🌵"],
-  space:    ["🚀","🛰️","🛸","🪐","🌟","🌕"],
-  sports:   ["⚽️","🏀","🏈","🏓","🏸","⛳️"],
-  transport:["🚗","🚌","🚲","🚂","🚁","✈️","🚇","🚜"],
-  shapes:   ["🔵","🔺","⬛️","⭐️","🟩","🟥","🟨","🟪"]
-};
+export const EMOJI_POOLS: ThemePool = {
+  animals: [
+    { emoji: '🐼', attributes: ['land'] },
+    { emoji: '🦊', attributes: ['land'] },
+    { emoji: '🐙', attributes: ['water'] },
+    // …
+  ],
+  food: [
+    { emoji: '🍎', attributes: ['round'] },
+    { emoji: '🍩', attributes: ['round', 'sweet'] },
+    // …
+  ],
+  // additional themes omitted for brevity
+}
 
-export const ATTRIBUTES: Record<string, string[]> = {
-  "🔵": ["round"],
-  "⚽️": ["round", "sports"],
-  "🍩": ["round", "food"],
-  "🌕": ["round", "space"],
-  "🟪": ["square-ish"],
-  "⬛️": ["square-ish"],
-  "🍕": ["triangle-ish"]
-};
+export const ORIENTATION_FRIENDLY_EMOJIS = new Set([
+  '🐢',
+  '🐸',
+  '🚀',
+  '🍕',
+  '🔵',
+  '🔺',
+  '🟩',
+  '🟥',
+])
 ```
 
 ---
@@ -234,4 +262,3 @@ https://<your-username>.github.io/odd-one-out/
 8. Icon Oddball Hunt
 9. Quirky Quartet Quest
 10. Emoti-Oops Arena
-

@@ -1,9 +1,10 @@
 import { Global } from '@emotion/react'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { AppLayout } from '../components/layout/AppLayout'
-import { LandingMessage } from '../components/placeholders/LandingMessage'
 import { globalStyles } from '../styles/global'
 import { theme } from './theme'
+import { GameProvider } from '../hooks/useGameController'
+import { GameScreen } from '../components/game/GameScreen'
 
 export function App() {
   return (
@@ -11,7 +12,9 @@ export function App() {
       <CssBaseline />
       <Global styles={globalStyles} />
       <AppLayout>
-        <LandingMessage />
+        <GameProvider>
+          <GameScreen />
+        </GameProvider>
       </AppLayout>
     </ThemeProvider>
   )
