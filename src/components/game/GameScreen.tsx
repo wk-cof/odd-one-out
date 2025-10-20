@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   Alert,
   Box,
-  Button,
   Chip,
   IconButton,
   Paper,
@@ -113,62 +112,80 @@ export function GameScreen() {
           </Stack>
         </Stack>
 
-        <GameHud state={state} settings={settings} bestScore={bestScore} />
-
-        <Paper
-          elevation={0}
+        <Box
           sx={{
-            p: 2,
-            borderRadius: 4,
-            bgcolor: 'rgba(12,14,19,0.8)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            display: 'grid',
+            gap: { xs: 2.5, md: 3 },
+            gridTemplateColumns: { xs: '1fr', md: '320px 1fr' },
+            alignItems: { md: 'center' },
           }}
         >
-          <Stack spacing={1.5}>
-            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-              <Typography variant="subtitle2" color="text.secondary">
-                Active patterns
-              </Typography>
-              {patternTags.map((tag) => (
-                <Chip
-                  key={tag.key}
-                  label={tag.label}
-                  color={tag.color as any}
-                  size="small"
-                  variant="outlined"
-                />
-              ))}
-            </Stack>
-            <Typography variant="body2">
-              {state.rule.description || 'Pick the odd one to keep your streak alive!'}
-            </Typography>
-            <Alert
-              severity={state.status === 'lost' ? 'error' : 'info'}
-              variant="outlined"
-              sx={{ mt: 1 }}
+          <Stack spacing={2} sx={{ maxWidth: { md: 320 } }}>
+            <GameHud state={state} settings={settings} bestScore={bestScore} />
+
+            <Paper
+              elevation={0}
+              sx={{
+                p: 2,
+                borderRadius: 4,
+                bgcolor: 'rgba(12,14,19,0.8)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
             >
-              {announcement}
-            </Alert>
+              <Stack spacing={1.25}>
+                <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                  <Typography variant="subtitle2" color="text.secondary">
+                    Active patterns
+                  </Typography>
+                  {patternTags.map((tag) => (
+                    <Chip
+                      key={tag.key}
+                      label={tag.label}
+                      color={tag.color as any}
+                      size="small"
+                      variant="outlined"
+                    />
+                  ))}
+                </Stack>
+                <Typography variant="body2">
+                  {state.rule.description || 'Pick the odd one to keep your streak alive!'}
+                </Typography>
+                <Alert
+                  severity={state.status === 'lost' ? 'error' : 'info'}
+                  variant="outlined"
+                >
+                  {announcement}
+                </Alert>
+              </Stack>
+            </Paper>
           </Stack>
-        </Paper>
 
-        <GameBoard
-          tiles={state.tiles}
-          disabled={state.status !== 'running'}
-          revealOdd={state.status === 'lost'}
-          onSelectTile={handleSelectTile}
-        />
-
-        <Stack direction="row" justifyContent="center">
-          <Button
-            variant="contained"
-            size="large"
-            onClick={restart}
-            startIcon={<RestartIcon />}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
           >
-            Restart
-          </Button>
-        </Stack>
+            <Box
+              sx={{
+                width: { xs: '100%', md: 'min(70vh, 600px)' },
+                maxWidth: '640px',
+                aspectRatio: '1',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <GameBoard
+                tiles={state.tiles}
+                disabled={state.status !== 'running'}
+                revealOdd={state.status === 'lost'}
+                onSelectTile={handleSelectTile}
+              />
+            </Box>
+          </Box>
+        </Box>
       </Stack>
 
       <SettingsPanel open={settingsOpen} onClose={handleCloseSettings} />

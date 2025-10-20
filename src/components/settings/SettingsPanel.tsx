@@ -58,10 +58,35 @@ export function SettingsPanel({ open, onClose }: SettingsPanelProps) {
                   setMode(next)
                 }
               }}
-              sx={{ mt: 1 }}
+              sx={{
+                mt: 1,
+                display: 'flex',
+                gap: 1,
+                '& .MuiToggleButton-root': {
+                  flex: 1,
+                  borderRadius: 2,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  textTransform: 'capitalize',
+                  color: 'text.secondary',
+                  transition: 'all 0.2s ease',
+                },
+                '& .MuiToggleButton-root.Mui-selected': {
+                  borderColor: 'primary.main',
+                  color: 'primary.contrastText',
+                  backgroundColor: 'primary.main',
+                  boxShadow: '0 0 0 2px rgba(99,102,241,0.35)',
+                  '&:hover': {
+                    backgroundColor: 'primary.dark',
+                  },
+                },
+                '& .MuiToggleButton-root:not(.Mui-selected):hover': {
+                  backgroundColor: 'rgba(255,255,255,0.08)',
+                },
+              }}
             >
               {MODES.map((mode) => (
-                <ToggleButton key={mode} value={mode} sx={{ textTransform: 'capitalize' }}>
+                <ToggleButton key={mode} value={mode}>
                   {mode}
                 </ToggleButton>
               ))}

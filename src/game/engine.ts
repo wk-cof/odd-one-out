@@ -68,16 +68,14 @@ const listActivePatterns = (patterns: GameSettings['patterns']): PatternType[] =
     .map(([type]) => type)
 
 const computeRoundTime = (round: number, settings: GameSettings): number => {
-  if (settings.mode === 'practice') {
+  if (settings.mode === 'practice' || settings.mode === 'kid') {
     return Number.POSITIVE_INFINITY
   }
 
   const { startTimeMs, minTimeMs, timeStepMs } = settings.timer
   const steps = Math.max(0, round - 1)
-  const decrement =
-    settings.mode === 'kid' ? Math.floor(timeStepMs * 0.5 * steps) : timeStepMs * steps
-  const base = settings.mode === 'kid' ? Math.floor(startTimeMs * 1.25) : startTimeMs
-  return Math.max(minTimeMs, base - decrement)
+  const decrement = timeStepMs * steps
+  return Math.max(minTimeMs, startTimeMs - decrement)
 }
 
 const initialiseRound = (
@@ -201,7 +199,7 @@ export const tick = (
   settings: GameSettings,
   dependencies: Partial<EngineDependencies> = {},
 ): GameState => {
-  if (state.status !== 'running' || settings.mode === 'practice') {
+  if (state.status !== 'running' || settings.mode === 'practice' || settings.mode === 'kid') {
     return state
   }
 

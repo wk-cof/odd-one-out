@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Box } from '@mui/material'
 import type { TileState } from '../../game/types'
 import { EmojiTile } from './EmojiTile'
 import { useArrowNavigation } from '../../hooks/useArrowNavigation'
@@ -18,11 +18,16 @@ export function GameBoard({ tiles, disabled, revealOdd, onSelectTile }: GameBoar
   })
 
   return (
-    <Grid
-      container
-      spacing={2}
-      columns={2}
-      justifyContent="center"
+    <Box
+      component="div"
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+        gap: { xs: 2, md: 3 },
+        width: '100%',
+        height: '100%',
+        placeItems: 'center',
+      }}
       ref={containerRef}
       onKeyDown={handleKeyDown}
       role="grid"
@@ -30,7 +35,7 @@ export function GameBoard({ tiles, disabled, revealOdd, onSelectTile }: GameBoar
       aria-disabled={disabled}
     >
       {tiles.map((tile, index) => (
-        <Grid item xs={1} key={tile.id} display="flex" justifyContent="center" role="presentation">
+        <Box key={tile.id} role="presentation" sx={{ width: '100%', height: '100%' }}>
           <EmojiTile
             tile={tile}
             disabled={disabled}
@@ -38,8 +43,8 @@ export function GameBoard({ tiles, disabled, revealOdd, onSelectTile }: GameBoar
             revealOdd={revealOdd}
             index={index}
           />
-        </Grid>
+        </Box>
       ))}
-    </Grid>
+    </Box>
   )
 }

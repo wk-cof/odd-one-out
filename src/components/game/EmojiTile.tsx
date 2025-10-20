@@ -30,16 +30,18 @@ const EmojiTileComponent = ({ tile, disabled, revealOdd, onSelect, index }: Emoj
     aria-label={`Emoji tile ${tile.emoji}`}
     component="button"
     sx={{
-      width: 'clamp(120px, 22vw, 150px)',
-      height: 'clamp(120px, 22vw, 150px)',
-      borderRadius: '28px',
+      width: '100%',
+      height: '100%',
+      maxWidth: { xs: 260, sm: 320 },
+      maxHeight: { xs: 260, sm: 320 },
+      borderRadius: '32px',
       background: 'rgba(255, 255, 255, 0.08)',
       backdropFilter: 'blur(10px)',
       border: '2px solid rgba(255, 255, 255, 0.12)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: 'clamp(3.5rem, 7vw, 4.5rem)',
+      fontSize: 'clamp(4rem, 10vw, 7rem)',
       transition: 'transform 160ms ease, border-color 160ms ease, background 160ms ease',
       color: 'inherit',
       position: 'relative',

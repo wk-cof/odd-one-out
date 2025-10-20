@@ -8,19 +8,20 @@ export function AppLayout({ children }: PropsWithChildren) {
       sx={{
         minHeight: '100vh',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: { xs: 'flex-start', md: 'center' },
         justifyContent: 'center',
-        py: { xs: 4, md: 6 },
+        py: { xs: 3, md: 4 },
+        px: { xs: 2, md: 4 },
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Stack
-          spacing={4}
+          spacing={3}
           sx={{
             bgcolor: 'background.paper',
             borderRadius: 4,
-            p: { xs: 4, md: 6 },
-            boxShadow: '0px 20px 40px rgba(0,0,0,0.45)',
+            p: { xs: 3, md: 4 },
+            boxShadow: '0px 16px 36px rgba(0,0,0,0.35)',
           }}
         >
           {children}

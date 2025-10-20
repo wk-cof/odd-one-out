@@ -70,6 +70,14 @@ describe('tick', () => {
     const next = tick(state, 5000, practiceSettings, deps)
     expect(next.timeLeftMs).toBe(state.timeLeftMs)
   })
+
+  it('does not change the timer during kid mode', () => {
+    const kidSettings = createSettings({ mode: 'kid' })
+    const state = createInitialState(kidSettings, deps)
+    const next = tick(state, 5000, kidSettings, deps)
+    expect(next.timeLeftMs).toBe(state.timeLeftMs)
+    expect(Number.isFinite(next.timeLeftMs)).toBe(false)
+  })
 })
 
 describe('evaluatePick', () => {

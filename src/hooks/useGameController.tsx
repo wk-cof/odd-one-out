@@ -62,6 +62,7 @@ export const GameProvider = ({
   initialSettings,
 }: GameProviderProps) => {
   const [settings, setSettings] = useState(() => createSettings(initialSettings))
+  const lastNonKidPatterns = useRef<GameSettings['patterns']>(settings.patterns)
 
   const engineDependencies = useMemo(
     () => combineDependencies(dependencyOverrides),
@@ -101,7 +102,13 @@ export const GameProvider = ({
   }, [settings])
 
   useEffect(() => {
-    if (state.status !== 'running' || settings.mode === 'practice') {
+    if (settings.mode !== 'kid') {
+      lastNonKidPatterns.current = settings.patterns
+    }
+  }, [settings.mode, settings.patterns])
+
+  useEffect(() => {
+    if (state.status !== 'running' || settings.mode === 'practice' || settings.mode === 'kid') {
       return
     }
     const interval = window.setInterval(() => {
@@ -154,29 +161,42 @@ export const GameProvider = ({
   }, [settings, engineDependencies])
 
   const setMode = useCallback((mode: Mode) => {
-    setSettings((prev) =>
-      mergeSettings(prev, {
+    setSettings((prev) => {
+      if (mode === 'kid' && prev.mode !== 'kid') {
+        lastNonKidPatterns.current = prev.patterns
+      }
+      const updates: Partial<GameSettings> = {
         mode,
         lives: mode === 'kid' ? 4 : prev.lives,
         timer:
-          mode === 'kid'
-            ? { startTimeMs: 7000, minTimeMs: 3500, timeStepMs: 150 }
-            : mode === 'practice'
-              ? { startTimeMs: 6000, minTimeMs: 6000, timeStepMs: 0 }
+          (mode === 'practice' || mode === 'kid')
+            ? { startTimeMs: 6000, minTimeMs: 6000, timeStepMs: 0 }
             : { startTimeMs: 6000, minTimeMs: 2500, timeStepMs: 200 },
-      }),
-    )
+      }
+
+      if (mode === 'kid') {
+        updates.patterns = { category: true, attribute: false, orientation: false }
+      } else if (prev.mode === 'kid') {
+        updates.patterns = lastNonKidPatterns.current
+      }
+
+      return mergeSettings(prev, updates)
+    })
     setAnnouncement(
       mode === 'practice'
         ? 'Practice mode enabled. Take your time and learn the rules.'
         : mode === 'kid'
-          ? 'Kid mode enabled. Longer timers and gentler ramp.'
+          ? 'Kid mode enabled. No countdowns and friendlier puzzles.'
           : 'Endless mode enabled. Timers will speed up each round.',
     )
   }, [])
 
   const togglePattern = useCallback((pattern: PatternType, enabled: boolean) => {
     setSettings((prev) => {
+      if (prev.mode === 'kid' && pattern !== 'category' && enabled) {
+        return prev
+      }
+
       const nextPatterns = {
         ...prev.patterns,
         [pattern]: enabled,
