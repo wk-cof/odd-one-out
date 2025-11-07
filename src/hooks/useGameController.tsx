@@ -1,6 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { PropsWithChildren } from 'react';
-import { createSettings, createInitialState, evaluatePick, revive, tick } from '../game/engine';
+import {
+  DEFAULT_SETTINGS,
+  createSettings,
+  createInitialState,
+  evaluatePick,
+  revive,
+  tick,
+} from '../game/engine';
 import { generateRuleRound } from '../game/rules';
 import { loadBestScore, loadSettings, saveBestScore, saveSettings } from '../game/storage';
 import type { EngineDependencies } from '../game/engine';
@@ -8,6 +15,17 @@ import type { GameSettings, GameState, Mode, PatternType, ThemeId } from '../gam
 import { GameContext, type GameContextValue } from './gameContext';
 
 type DependencyOverrides = Partial<EngineDependencies>;
+
+const KID_DEFAULTS: Partial<GameSettings> = {
+  mode: 'kid',
+  lives: 4,
+  patterns: { category: true, attribute: false, orientation: false },
+  timer: { startTimeMs: 6000, minTimeMs: 6000, timeStepMs: 0 },
+};
+
+const NON_KID_PATTERNS: GameSettings['patterns'] = {
+  ...DEFAULT_SETTINGS.patterns,
+};
 
 interface GameProviderProps extends PropsWithChildren {
   dependencies?: DependencyOverrides;
@@ -38,12 +56,16 @@ export const GameProvider = ({
   dependencies: dependencyOverrides,
   initialSettings,
 }: GameProviderProps) => {
-  const initialSettingsRef = useRef<GameSettings>();
+  const initialSettingsRef = useRef<GameSettings | null>(null);
   if (!initialSettingsRef.current) {
-    initialSettingsRef.current = createSettings(initialSettings);
+    initialSettingsRef.current = createSettings(initialSettings ?? KID_DEFAULTS);
   }
   const [settings, setSettings] = useState<GameSettings>(() => initialSettingsRef.current!);
-  const lastNonKidPatterns = useRef<GameSettings['patterns']>(settings.patterns);
+  const lastNonKidPatterns = useRef<GameSettings['patterns']>(
+    initialSettingsRef.current.mode === 'kid'
+      ? { ...NON_KID_PATTERNS }
+      : initialSettingsRef.current.patterns,
+  );
 
   const engineDependencies = useMemo(
     () => combineDependencies(dependencyOverrides),

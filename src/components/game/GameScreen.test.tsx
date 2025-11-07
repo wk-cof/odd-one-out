@@ -74,6 +74,6 @@ describe('GameScreen', () => {
     expect(screen.getByTestId('stat-score')).not.toHaveTextContent('0');
     expect(generateRound).toHaveBeenCalledTimes(2);
     expect(Number(screen.getByTestId('stat-best').textContent ?? '0')).toBeGreaterThan(0);
-    expect(Number(window.localStorage.getItem('ooo:bestScore:endless') ?? '0')).toBeGreaterThan(0);
+    expect(Number(window.localStorage.getItem('ooo:bestScore:kid') ?? '0')).toBeGreaterThan(0);
   });
 });
