@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Tune'
 import type { Mode, PatternType, ThemeId } from '../../game/types'
-import { useGame } from '../../hooks/useGameController'
+import { useGame } from '../../hooks/gameContext'
 import { THEME_LABELS } from '../../data/emojis'
 
 const MODES: Mode[] = ['endless', 'practice', 'kid']

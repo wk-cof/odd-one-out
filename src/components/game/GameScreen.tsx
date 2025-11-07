@@ -1,40 +1,32 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  Alert,
-  Box,
-  Chip,
-  IconButton,
-  Paper,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material'
-import RestartIcon from '@mui/icons-material/Replay'
-import SettingsIcon from '@mui/icons-material/Tune'
-import type { PatternType } from '../../game/types'
-import { useGame } from '../../hooks/useGameController'
-import { GameHud } from './GameHud'
-import { GameBoard } from './GameBoard'
-import { GameOverDialog } from './GameOverDialog'
-import { SettingsPanel } from '../settings/SettingsPanel'
-import { LiveRegion } from '../a11y/LiveRegion'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Alert, Box, Chip, IconButton, Paper, Stack, Tooltip, Typography } from '@mui/material';
+import type { ChipProps } from '@mui/material';
+import RestartIcon from '@mui/icons-material/Replay';
+import SettingsIcon from '@mui/icons-material/Tune';
+import type { PatternType } from '../../game/types';
+import { useGame } from '../../hooks/gameContext';
+import { GameHud } from './GameHud';
+import { GameBoard } from './GameBoard';
+import { GameOverDialog } from './GameOverDialog';
+import { SettingsPanel } from '../settings/SettingsPanel';
+import { LiveRegion } from '../a11y/LiveRegion';
 
 const patternLabels: Record<PatternType, string> = {
   category: 'Category',
   attribute: 'Attribute',
   orientation: 'Orientation',
-}
+};
 
-const patternColors: Record<PatternType, string> = {
+const patternColors: Record<PatternType, ChipProps['color']> = {
   category: 'primary',
   attribute: 'secondary',
   orientation: 'info',
-}
+};
 
 export function GameScreen() {
-  const { state, settings, selectTile, restart, announcement, bestScore } = useGame()
-  const [settingsOpen, setSettingsOpen] = useState(false)
-  const settingsButtonRef = useRef<HTMLButtonElement | null>(null)
+  const { state, settings, selectTile, restart, announcement, bestScore } = useGame();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const settingsButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const patternTags = useMemo(
     () =>
@@ -46,40 +38,40 @@ export function GameScreen() {
           color: patternColors[pattern],
         })),
     [settings.patterns],
-  )
+  );
 
   const handleSelectTile = (tileId: string) => {
     if (state.status === 'running') {
-      selectTile(tileId)
+      selectTile(tileId);
     }
-  }
+  };
 
-  const handleCloseSettings = () => {
-    setSettingsOpen(false)
-    settingsButtonRef.current?.focus()
-  }
+  const handleCloseSettings = useCallback(() => {
+    setSettingsOpen(false);
+    settingsButtonRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
-      if (event.defaultPrevented) return
-      const key = event.key.toLowerCase()
+      if (event.defaultPrevented) return;
+      const key = event.key.toLowerCase();
       if (key === 'r') {
-        event.preventDefault()
-        restart()
+        event.preventDefault();
+        restart();
       }
       if (key === 's') {
-        event.preventDefault()
+        event.preventDefault();
         if (settingsOpen) {
-          handleCloseSettings()
+          handleCloseSettings();
         } else {
-          setSettingsOpen(true)
+          setSettingsOpen(true);
         }
       }
-    }
+    };
 
-    window.addEventListener('keydown', handleKey)
-    return () => window.removeEventListener('keydown', handleKey)
-  }, [restart, settingsOpen, handleCloseSettings])
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [restart, settingsOpen, handleCloseSettings]);
 
   return (
     <>
@@ -141,7 +133,7 @@ export function GameScreen() {
                     <Chip
                       key={tag.key}
                       label={tag.label}
-                      color={tag.color as any}
+                      color={tag.color}
                       size="small"
                       variant="outlined"
                     />
@@ -150,10 +142,7 @@ export function GameScreen() {
                 <Typography variant="body2">
                   {state.rule.description || 'Pick the odd one to keep your streak alive!'}
                 </Typography>
-                <Alert
-                  severity={state.status === 'lost' ? 'error' : 'info'}
-                  variant="outlined"
-                >
+                <Alert severity={state.status === 'lost' ? 'error' : 'info'} variant="outlined">
                   {announcement}
                 </Alert>
               </Stack>
@@ -192,5 +181,5 @@ export function GameScreen() {
 
       <GameOverDialog state={state} open={state.status === 'lost'} onRestart={restart} />
     </>
-  )
+  );
 }

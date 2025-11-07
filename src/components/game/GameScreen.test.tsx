@@ -1,10 +1,11 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import userEvent from '@testing-library/user-event'
-import { renderWithProviders, screen } from '../../test/utils'
-import { GameProvider } from '../../hooks/useGameController'
-import { GameScreen } from './GameScreen'
-import type { RoundGenerationOutput } from '../../game/engine'
-import type { TileState } from '../../game/types'
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/react';
+import { renderWithProviders } from '../../test/utils';
+import { GameProvider } from '../../hooks/useGameController';
+import { GameScreen } from './GameScreen';
+import type { RoundGenerationOutput } from '../../game/engine';
+import type { TileState } from '../../game/types';
 
 const createTile = (id: string, emoji: string, theme: TileState['theme'], isOdd = false) => ({
   id,
@@ -13,7 +14,7 @@ const createTile = (id: string, emoji: string, theme: TileState['theme'], isOdd 
   isOdd,
   attributes: [],
   orientation: 'upright' as const,
-})
+});
 
 const rounds: RoundGenerationOutput[] = [
   {
@@ -44,35 +45,35 @@ const rounds: RoundGenerationOutput[] = [
     },
     oddTileId: 'tile-2',
   },
-]
+];
 
 describe('GameScreen', () => {
   beforeEach(() => {
-    window.localStorage.clear()
-  })
+    window.localStorage.clear();
+  });
 
   it('advances score when selecting the odd tile', async () => {
-    const user = userEvent.setup()
+    const user = userEvent.setup();
     const generateRound = vi
       .fn()
       .mockImplementationOnce(() => rounds[0])
       .mockImplementationOnce(() => rounds[1])
-      .mockImplementation(() => rounds[1])
+      .mockImplementation(() => rounds[1]);
 
     renderWithProviders(
       <GameProvider dependencies={{ generateRound, random: () => 0.1 }}>
         <GameScreen />
       </GameProvider>,
-    )
+    );
 
-    expect(generateRound).toHaveBeenCalledTimes(1)
-    expect(screen.getByTestId('stat-score')).toHaveTextContent('0')
+    expect(generateRound).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId('stat-score')).toHaveTextContent('0');
 
-    await user.click(screen.getByRole('button', { name: /🍎/ }))
+    await user.click(screen.getByRole('button', { name: /🍎/ }));
 
-    expect(screen.getByTestId('stat-score')).not.toHaveTextContent('0')
-    expect(generateRound).toHaveBeenCalledTimes(2)
-    expect(Number(screen.getByTestId('stat-best').textContent ?? '0')).toBeGreaterThan(0)
-    expect(Number(window.localStorage.getItem('ooo:bestScore:endless') ?? '0')).toBeGreaterThan(0)
-  })
-})
+    expect(screen.getByTestId('stat-score')).not.toHaveTextContent('0');
+    expect(generateRound).toHaveBeenCalledTimes(2);
+    expect(Number(screen.getByTestId('stat-best').textContent ?? '0')).toBeGreaterThan(0);
+    expect(Number(window.localStorage.getItem('ooo:bestScore:endless') ?? '0')).toBeGreaterThan(0);
+  });
+});
